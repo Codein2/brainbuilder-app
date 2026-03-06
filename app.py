@@ -30,7 +30,7 @@ with col2:
             with st.spinner("IA trabalhando..."):
                 try:
                     # Linha corrigida e alinhada
-                    model = genai.GenerativeModel('gemini-1.5-flash')
+                    model = genai.GenerativeModel(model_name="models/gemini-1.5-flash")
                     prompt = f"Como consultor especialista em {nicho_escolhido}, organize este texto em um manual de processos: {entrada}"
                     response = model.generate_content(prompt)
                     st.write(response.text)
