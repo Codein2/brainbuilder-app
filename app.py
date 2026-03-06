@@ -32,7 +32,7 @@ with col2:
         if entrada:
             with st.spinner("A processar..."):
                 try:
-                    model = genai.GenerativeModel('gemini-1.5-flash')
+                    model = genai.GenerativeModel('gemini-pro')
                     prompt = f"Como consultor especialista em {nicho_escolhido}, organiza este texto num manual de processos: {entrada}"
                     response = model.generate_content(prompt)
                     st.write(response.text)
