@@ -1,26 +1,43 @@
 import streamlit as st
+import google.generativeai as genai
 
-# Configuração da Página
+# Conecta com a chave que guardaste no Streamlit
+if "GEMINI_API_KEY" in st.secrets:
+    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+
 st.set_page_config(page_title="BrainBuilder AI", layout="wide")
 
-# Barra Lateral com Nichos
+# Título do App
+st.title("🧠 BrainBuilder AI - Painel de Controle")
+
+# Menu de Escolha de Nicho
 with st.sidebar:
-    st.title("📂 Nichos")
-    nicho = st.selectbox("Selecione o Nicho:", ["Saúde", "Imobiliário", "Jurídico", "Gastronomia", "Indústria"])
+    st.header("📂 Configuração")
+    nicho_escolhido = st.selectbox(
+        "Selecione o Nicho do Cliente:", 
+        ["Saúde & Estética", "Imobiliário", "Jurídico", "Gastronomia", "Indústria Local"]
+    )
+    st.info(f"Nicho Ativo: {nicho_escolhido}")
 
-# Dashboard Principal
-st.title(f"🧠 BrainBuilder - {nicho}")
+# Área de Trabalho
+col1, col2 = st.columns(2)
 
-# Área de Upload
-c1, c2 = st.columns(2)
-with c1:
+with col1:
     st.subheader("📥 Entrada de Dados")
-    entrada = st.text_area("Cole a bagunça aqui:", height=300)
-    
-with c2:
-    st.subheader("✨ Saída Estruturada")
-    if st.button("🚀 Organizar com IA"):
-        st.write("Conecte sua API Key para processar.")
+    entrada = st.text_area("Cole o texto bagunçado aqui:", height=300)
 
-st.divider()
-st.button("📄 Gerar PDF de Consultoria")
+with col2:
+    st.subheader("✨ Manual Estruturado")
+    if st.button("🚀 Organizar com IA"):
+        if entrada:
+            with st.spinner("A processar..."):
+                try:
+                    model = genai.GenerativeModel('gemini-1.5-flash')
+                    prompt = f"Como consultor especialista em {nicho_escolhido}, organiza este texto num manual de processos: {entrada}"
+                    response = model.generate_content(prompt)
+                    st.write(response.text)
+                except Exception as e:
+                    st.error(f"Erro: {e}")
+        else:
+            st.warning("Escreve algo primeiro!")
+                       
